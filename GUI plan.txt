@@ -1,7 +1,0 @@
-GUI
-All angle stuff
-Striking ridge
-Line approx. stuff
-
-Scars info
-Documentation
