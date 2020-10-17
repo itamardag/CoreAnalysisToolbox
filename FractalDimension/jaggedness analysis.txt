@@ -1,0 +1,10 @@
+find straight line approximations for blanks using the blank's normal direction as radial axis and local extremum along this axis. the height of the line should be the average between extremums.
+
+define jaggedness on blank level using r^2 from the line approximations.
+
+define irregularity on the stone level according to the resulting polygon approximation.
+
+
+17.9:
++angle mean
++instead of jaggedness the avg curvature of each blank ridge
