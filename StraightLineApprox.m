@@ -2,7 +2,7 @@ function [straightLineRidges, jaggedness, edgeLengthVar, angleVar, angleMean, an
     = StraightLineApprox(strikingPlatform, blanks, scars)
 if nargin < 3
 %     [name, path] = uigetfile('ScarsQins-*.mat'); 
-    name = 'ScarsQins-EG_IV_3028.mat'; path = 'E:\Archeology Lab\forItamar\FrancescoNewBugs\';
+    name = 'ScarsQins-L_18_H14bd_172_176_10.mat'; path = 'E:\Archeology Lab\francesco ridge segments bug\';
     scars = load([path name]);
 end
 
@@ -29,18 +29,28 @@ for neighborIndex = 1:length(blanks)
     eitherNeighbor = neighbors == [min(strikingPlatform, neighbor), max(strikingPlatform, neighbor)];
     bothNeighbors = eitherNeighbor(:, 1) & eitherNeighbor(:, 2);
     ridgeIndices = find(bothNeighbors > 0);
-    ridge = [];
 %     patch('Faces',scars.sdata(neighbor).faces,'Vertices',scars.v,'facecolor',[1 1 1],'linestyle','none','AmbientStrength',0.3, ...
 %       'SpecularExponent',30,'SpecularStrength',0.1,'Tag',getPatchTag);
+    totalLineLength = 0;
+    totalCurvature = 0;
+    totalWeight = 0;
+    fullRidge = [];
     for i = 1:length(ridgeIndices)
 %         plot3(scars.scars_data{ridgeIndices(i), 1}(:, 1), scars.scars_data{ridgeIndices(i), 1}(:, 2), scars.scars_data{ridgeIndices(i), 1}(:, 3))
-        ridge = [ridge; scars.scars_data{ridgeIndices(i), 1}];
+        ridge = scars.scars_data{ridgeIndices(i), 1};
+        fullRidge = [fullRidge; ridge];
+        [~, ~, curvatures, ~, avgPointDist, lineLength] = LineApprox(ridge, forward, up);
+        totalLineLength = totalLineLength + lineLength;
+        curvatures(curvatures == inf) = [];
+        curvatures(imag(curvatures) ~= 0) = [];
+        if (~isempty(curvatures))
+            totalCurvature = (totalCurvature * totalWeight + sum(curvatures)) / ...
+                             (totalWeight + length(curvatures));
+        end
     end
-    [p1, p2, curvatures, ~, avgPointDist, totalLineLength] = LineApprox(ridge, forward, up);
-    curvatures(curvatures == inf) = NaN;
-    curvatures(imag(curvatures) ~= 0) = NaN;
+    [p1, p2, ~, ~, ~, ~] = LineApprox(fullRidge, forward, up);
+    jaggedness(neighborIndex) = totalCurvature;
     straightLineRidges{neighborIndex} = [p1; p2];
-    jaggedness(neighborIndex) = mean(curvatures,'omitnan');
     pointDists(neighborIndex, 1) = avgPointDist;
     pointDists(neighborIndex, 2) = totalLineLength;
 %     plot3([p1(1), p2(1)], [p1(2), p2(2)], [p1(3), p2(3)]);
