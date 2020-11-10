@@ -48,6 +48,8 @@ var.p_curv_avg=NaN(0,1);
 var.p_ang_avg=NaN(0,1);
 var.p_ang_turn=NaN(0,1);
 var.p_s_lines=cell(0,1);
+var.p_length=cell(0,1);
+var.p_point_dist=cell(0,1);
 for i=find(var1.core_size<=size_lim_high & var1.core_size>=size_lim_low)'
     var.ang=[var.ang;var1.ang{i}];
     var.var=[var.var;var1.var{i}];
@@ -62,13 +64,15 @@ for i=find(var1.core_size<=size_lim_high & var1.core_size>=size_lim_low)'
     var.scar_number=[var.scar_number,var1.scar_number(i)];
     var.data=[var.data,var1.data{i}];
     var.core_size=[var.core_size;var1.core_size(i)];
-   var.p_curv=[var.p_curv;var1.p_curv{i}];
-   var.p_L_var=[var.p_L_var;var1.p_L_var(i)];
-   var.p_ang_var=[var.p_ang_var;var1.p_ang_var(i)];
-   var.p_ang_avg=[var.p_ang_avg;var1.p_ang_avg(i)];
-   var.p_curv_avg=[var.p_curv_avg;var1.p_curv_avg(i)];
-   var.p_ang_turn=[var.p_ang_turn;var1.p_ang_turn(i)];
-   var.p_s_lines=[var.p_s_lines;var1.p_s_lines(i)];
+    var.p_curv=[var.p_curv;var1.p_curv{i}];
+    var.p_L_var=[var.p_L_var;var1.p_L_var(i)];
+    var.p_ang_var=[var.p_ang_var;var1.p_ang_var(i)];
+    var.p_ang_avg=[var.p_ang_avg;var1.p_ang_avg(i)];
+    var.p_curv_avg=[var.p_curv_avg;var1.p_curv_avg(i)];
+    var.p_ang_turn=[var.p_ang_turn;var1.p_ang_turn(i)];
+    var.p_s_lines=[var.p_s_lines;var1.p_s_lines(i)];
+    var.p_length=[var.p_length;var1.p_length(i)];
+    var.p_point_dist=[var.p_point_dist;var1.p_point_dist(i)];
 end
 
 %Define Scar-related variables based on size criteria
@@ -82,6 +86,8 @@ var.blank_ID=[];
 var.scar_p_curv=[];
 var.scar_core_size=[];
 var.scar_p_width=[];
+var.scar_p_ridge=[];
+var.scar_p_point_dist=[];
 % var.scar_jagg=[];
 % var.avg_jagg=[];
 % var.scar_w=[];
@@ -94,13 +100,15 @@ for i=find(var1.core_size<=size_lim_high & var1.core_size>=size_lim_low)'
     var.scar_angle=[var.scar_angle,var1.angs{i}];%(:,l_scar_ind)];
     var.scar_dif=[var.scar_dif,var1.dif_pace{i}];%(:,l_scar_ind)];
     var.scar_dev=[var.scar_dev,var1.dev_pace{i}];%(:,l_scar_ind)];
-   var.scar_name=[var.scar_name,repmat(var1.name(i),1,var1.scar_number(i))];
-   var.scar_path=[var.scar_path,repmat(var1.path(i),1,var1.scar_number(i))];
-   var.plat_ID=[var.plat_ID,repmat(var1.plat{i},1,var1.scar_number(i))];
-   var.blank_ID=[var.blank_ID,var1.blanks{i}];
-   var.scar_core_size=[var.scar_core_size;repmat(var1.core_size(i),var1.scar_number(i),1)];
+    var.scar_name=[var.scar_name,repmat(var1.name(i),1,var1.scar_number(i))];
+    var.scar_path=[var.scar_path,repmat(var1.path(i),1,var1.scar_number(i))];
+    var.plat_ID=[var.plat_ID,repmat(var1.plat{i},1,var1.scar_number(i))];
+    var.blank_ID=[var.blank_ID,var1.blanks{i}];
+    var.scar_core_size=[var.scar_core_size;repmat(var1.core_size(i),var1.scar_number(i),1)];
    for j=1:length(var1.p_s_lines{i})
        var.scar_p_width=[var.scar_p_width;pdist(var1.p_s_lines{i}{j})];
+       var.scar_p_ridge=[var.scar_p_ridge;var1.p_length{i}(j)];
+       var.scar_p_point_dist=[var.scar_p_point_dist;var1.p_point_dist{i}(j)];
    end
 %     var.scar_jagg=[var.scar_jagg,var.jaggedness{i}(:,l_scar_ind)];%];    
 %     for ii=1:var.scar_number(i)
@@ -120,6 +128,7 @@ for i=find(var1.core_size<=size_lim_high & var1.core_size>=size_lim_low)'
 %     var.plat_ID(len+1:len+len_2)=var1.plat{i};
 %     var.blank_ID(len+1:len+len_2)=var1.blanks{i};%(l_scar_ind);
 end
+var.scar_p_ridge_width_ratio=var.scar_p_ridge./var.scar_p_width;
 var.scar_length=sum(~isnan(var.scar_angle)).*var1.seg_length;
 var.dif_ol=isoutlier(var.scar_dif,2);
 var.ang_ol=isoutlier(var.scar_angle,2);

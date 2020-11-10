@@ -63,6 +63,8 @@ end
     var.p_ang_avg=var1.p_ang_avg;
     var.p_ang_turn=var1.p_ang_turn;
     var.p_s_lines=var1.p_s_lines;
+    var.p_length=var1.p_length;
+    var.p_point_dist=var1.p_point_dist;
 % end
 
 %Define SCAR-related variables based on size criteria
@@ -76,6 +78,8 @@ var.blank_ID=[];
 var.scar_p_curv=[];
 var.scar_core_size=[];
 var.scar_p_width=[];
+var.scar_p_ridge=[];
+var.scar_p_point_dist=[];
 % var.scar_jagg=[];
 % var.avg_jagg=[];
 % var.scar_w=[];
@@ -88,13 +92,15 @@ for i=1:size(var1.ang,1)
     var.scar_angle=[var.scar_angle,var1.angs{i}(:,l_scar_ind)];%];
     var.scar_dif=[var.scar_dif,var1.dif_pace{i}(:,l_scar_ind)];%];
     var.scar_dev=[var.scar_dev,var1.dev_pace{i}(:,l_scar_ind)];%];
-   var.scar_name=[var.scar_name,repmat(var1.name(i),1,size(l_scar_ind,2))];
-   var.scar_path=[var.scar_path,repmat(var1.path(i),1,size(l_scar_ind,2))];
-   var.plat_ID=[var.plat_ID,repmat(var1.plat{i},1,size(l_scar_ind,2))];
-   var.blank_ID=[var.blank_ID,var1.blanks{i}(:,l_scar_ind)];
-   var.scar_p_curv=[var.scar_p_curv;(var1.p_curv{i}(:,l_scar_ind))'];
+    var.scar_name=[var.scar_name,repmat(var1.name(i),1,size(l_scar_ind,2))];
+    var.scar_path=[var.scar_path,repmat(var1.path(i),1,size(l_scar_ind,2))];
+    var.plat_ID=[var.plat_ID,repmat(var1.plat{i},1,size(l_scar_ind,2))];
+    var.blank_ID=[var.blank_ID,var1.blanks{i}(:,l_scar_ind)];
+    var.scar_p_curv=[var.scar_p_curv;(var1.p_curv{i}(:,l_scar_ind))'];
    for j=l_scar_ind
        var.scar_p_width=[var.scar_p_width;pdist(var.p_s_lines{i}{j})];
+       var.scar_p_ridge=[var.scar_p_ridge;var.p_length{i}(j)];
+       var.scar_p_point_dist=[var.scar_p_point_dist;var.p_point_dist{i}(j)];
    end
    var.scar_core_size=[var.scar_core_size;repmat(var1.core_size(i),size(l_scar_ind,2),1)];
 %     var.scar_jagg=[var.scar_jagg,var.jaggedness{i}(:,l_scar_ind)];%];    
@@ -115,6 +121,7 @@ for i=1:size(var1.ang,1)
 %     var.plat_ID(len+1:len+len_2)=var1.plat{i};
 %     var.blank_ID(len+1:len+len_2)=var1.blanks{i};%(l_scar_ind);
 end
+var.scar_p_ridge_width_ratio=var.scar_p_ridge./var.scar_p_width;
 var.scar_length=sum(~isnan(var.scar_angle)).*var1.seg_length;
 var.dif_ol=isoutlier(var.scar_dif,2);
 var.ang_ol=isoutlier(var.scar_angle,2);

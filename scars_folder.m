@@ -32,6 +32,8 @@ var.p_ang_turn=[];
 var.p_s_lines=cell(0,1);
 var.scar_p_width=NaN(0,1);
 var.scar_p_curv=NaN(0,1);
+var.p_length=cell(0,1);
+var.p_point_dist=cell(0,1);
 err_log=cell(0,1);
 for i=1:length(files)
     if ~endsWith(files(i).name, 'ScarAngles.mat') && ~endsWith(files(i).name, 'Scars_IDs.mat')
@@ -47,34 +49,11 @@ for i=1:length(files)
             err_log=[err_log;err_c];
         end
         
-        %extract data on platform outline
-        [p_s_lines, p_curv, p_L_var, p_ang_var, p_ang_avg,p_ang_turn,err_c_plat,err_ID_plat] = ...
-            StraightLineApprox(plat, blanks, scars,files(i).name);
-        %remove invalid values
-        err_id=unique([err_id;err_ID_plat]);
-        blanks=blanks(~err_id);
-        angles=angles(~err_id);
-        variances=variances(~err_id);
-        if ~isempty(err_c_plat)
-            err_log=[err_log;err_c_plat];
-        end
-        if ~isempty(p_curv)
-            len=length(var.angs)+1;
-            var.p_curv_avg(len,:)=mean(p_curv,'omitnan');
-            var.p_curv(len,:)={p_curv};
-            var.p_L_var(len,:)=p_L_var;
-            var.p_ang_var(len,:)=p_ang_var;
-            var.p_ang_avg(len,:)=p_ang_avg;
-            var.p_ang_turn(len,:)=p_ang_turn;
-            var.scar_p_curv=[var.scar_p_curv;p_curv'];
-            scar_p_width=NaN(length(p_s_lines),1);
-            var.p_s_lines{len,:}=p_s_lines;
-            for j=1:length(p_s_lines)
-                scar_p_width(j)=pdist(p_s_lines{j});
-            end
-            var.scar_p_width=[var.scar_p_width;scar_p_width];
-        end
+        %err_id=unique([err_id;err_ID_plat]);
         if ~isempty(angle)
+            %remove invalid blank IDs
+            blanks=blanks(~err_id);
+            len=length(var.angs)+1;
             var.ang(len,:)={angle};
             var.var(len,:)={variance};
             var.angs(len,:)={angles};
@@ -83,7 +62,42 @@ for i=1:length(files)
             var.name(len,:)={name};
             var.plat(len,:)={plat};
             var.blanks(len,:)={blanks};
+        
+        
+        %extract data on platform outline
+        [p_s_lines, p_curv, p_L_var, p_ang_var, p_ang_avg,p_ang_turn,p_pdists] = ...
+            StraightLineApprox(plat, blanks, scars);
+        
+        if ~isempty(p_curv)
+            %remove invalid values %Already removed before calculating data
+            %on platform outline. Yuppee!
+%             p_curv=p_curv(~err_id);
+%             p_pdists=p_pdists(~err_id,:);
+%             p_s_lines=p_s_lines(~err_id);
+%         if ~isempty(err_c_plat)
+%             err_log=[err_log;err_c_plat];
+%         end
+        
+            var.p_curv_avg(len,:)=mean(p_curv,'omitnan');
+            var.p_curv(len,:)={p_curv};
+            var.p_L_var(len,:)=p_L_var;
+            var.p_ang_var(len,:)=p_ang_var;
+            var.p_ang_avg(len,:)=p_ang_avg;
+            var.p_ang_turn(len,:)=p_ang_turn;
+            var.scar_p_curv=[var.scar_p_curv;p_curv'];
+            var.p_s_lines{len,:}=p_s_lines;
+            var.p_length{len,:}=p_pdists(:,2);
+            var.p_point_dist{len,:}=p_pdists(:,1);
+            scar_p_width=NaN(length(p_s_lines),1);
+            for j=1:length(p_s_lines)
+                if ~isempty(p_s_lines{j})
+                    scar_p_width(j)=pdist(p_s_lines{j});
+                end
+            end
+            var.scar_p_width=[var.scar_p_width;scar_p_width];
         end
+        end
+
     waitbar(i/length(files),wb,[num2str(i),' of ',f_num,' files processed'])
     end
 end
