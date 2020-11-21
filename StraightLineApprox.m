@@ -1,8 +1,8 @@
 function [straightLineRidges, jaggedness, edgeLengthVar, angleVar, angleMean, angleTurn, pointDists] ...
     = StraightLineApprox(strikingPlatform, blanks, scars)
 if nargin < 3
-%     [name, path] = uigetfile('ScarsQins-*.mat'); 
-    name = 'ScarsQins-L_18_H14bd_172_176_10.mat'; path = 'E:\Archeology Lab\francesco ridge segments bug\';
+    [name, path] = uigetfile('ScarsQins-*.mat'); 
+%     name = 'ScarsQins-L_18_H14bd_172_176_10.mat'; path = 'E:\Archeology Lab\francesco ridge segments bug\';
     scars = load([path name]);
 end
 
@@ -20,12 +20,14 @@ if isempty(scars.sdata(strikingPlatform).faces) % Striking platform was merged i
        return
 end
 [up, ~] = SurfaceMeanNorm(scars.sdata(strikingPlatform).faces, scars.v, [0 0 0]);
+meanForward = zeros(size(up));
 for neighborIndex = 1:length(blanks)
     neighbor = blanks(neighborIndex);
     if isempty(scars.sdata(neighbor).faces)
        continue; %scar was merged into another scar
     end
     [forward, ~] = SurfaceMeanNorm(scars.sdata(neighbor).faces, scars.v, [0 0 0]);
+    meanForward = ((neighborIndex - 1) * meanForward + forward) / neighborIndex;
     eitherNeighbor = neighbors == [min(strikingPlatform, neighbor), max(strikingPlatform, neighbor)];
     bothNeighbors = eitherNeighbor(:, 1) & eitherNeighbor(:, 2);
     ridgeIndices = find(bothNeighbors > 0);
@@ -55,6 +57,9 @@ for neighborIndex = 1:length(blanks)
     pointDists(neighborIndex, 2) = totalLineLength;
 %     plot3([p1(1), p2(1)], [p1(2), p2(2)], [p1(3), p2(3)]);
 end
+
+SetUpForwardDirections([path name(6:end)], up, meanForward);
+
 if length(straightLineRidges)>1 %more than 1 valid blank-plat pairs
 lengths = NaN(length(straightLineRidges), 1);
 angles = NaN(length(straightLineRidges), 1);
