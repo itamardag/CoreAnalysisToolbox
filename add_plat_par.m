@@ -1,4 +1,4 @@
-function [ var,err_log ] = add_plat_par(var1)
+function [ var ] = add_plat_par(var1)%,err_log
 %ADD_PALT_PAR adds the parameters of the 
 % STRIKING PLATFORM outline based on informatios var1
 
@@ -19,15 +19,17 @@ var.scar_p_curv=NaN(0,1);
 var.p_s_lines=cell(0,1);
 %var.scar_p_s_lines=NaN(0,1);
 var.scar_p_width=NaN(0,1);
-err_log=cell(0,1);
+var.p_length=cell(0,1);
+var.p_point_dist=cell(0,1);
+%err_log=cell(0,1);
 for i=1:length(var1.name)
     scars=load([var1.path{i},var1.name{i}]);
-    [p_s_lines, p_curv, p_L_var, p_ang_var, p_ang_avg,p_ang_turn,err_c,err_id] = ...
-            StraightLineApprox(var1.plat{i}, var1.blanks{i}, scars,var1.name{i});
-    var.blanks{i}=var1.blanks{i}(~err_id);
-    if ~isempty(err_c)
-        err_log=[err_log;err_c];
-    end
+    [p_s_lines, p_curv, p_L_var, p_ang_var, p_ang_avg,p_ang_turn,p_pdists] = ...
+            StraightLineApprox(var1.plat{i}, var1.blanks{i}, scars);%,var1.name{i}
+%     var.blanks{i}=var1.blanks{i}(~err_id);
+%     if ~isempty(err_c)
+%         err_log=[err_log;err_c];
+%     end
     if ~isempty(p_curv)
         len=length(var.p_curv)+1;
         var.p_curv(len,:)={p_curv};
@@ -38,6 +40,8 @@ for i=1:length(var1.name)
         var.p_ang_turn(len,:)=p_ang_turn;
         var.p_s_lines{len,:}=p_s_lines;
         var.scar_p_curv=[var.scar_p_curv;p_curv'];
+        var.p_length{len,:}=p_pdists(:,2);
+        var.p_point_dist{len,:}=p_pdists(:,1);
         scar_p_width=NaN(length(p_s_lines),1);
         for j=1:length(p_s_lines)
             scar_p_width(j)=pdist(p_s_lines{j});

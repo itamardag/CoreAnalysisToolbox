@@ -48,6 +48,7 @@ for neighborIndex = 1:length(blanks)
         if (~isempty(curvatures))
             totalCurvature = (totalCurvature * totalWeight + sum(curvatures)) / ...
                              (totalWeight + length(curvatures));
+            totalWeight=totalWeight + length(curvatures);
         end
     end
     [p1, p2, ~, ~, ~, ~] = LineApprox(fullRidge, forward, up);
