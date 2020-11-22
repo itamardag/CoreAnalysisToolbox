@@ -1,5 +1,5 @@
 function [straightLineRidges, jaggedness, edgeLengthVar, angleVar, angleMean, angleTurn, pointDists] ...
-    = StraightLineApprox(strikingPlatform, blanks, scars)
+    = StraightLineApprox(strikingPlatform, blanks, scars, path, name)
 if nargin < 3
     [name, path] = uigetfile('ScarsQins-*.mat'); 
 %     name = 'ScarsQins-L_18_H14bd_172_176_10.mat'; path = 'E:\Archeology Lab\francesco ridge segments bug\';
