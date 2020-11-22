@@ -12,6 +12,7 @@ Ry = [[cos(yAngleUp), 0, -sin(yAngleUp)]; [0, 1, 0]; [sin(yAngleUp), 0, cos(yAng
 forward = Ry * forward;
 zAngleForward = atan2(forward(1), forward(2));
 Rz = [[cos(zAngleForward), -sin(zAngleForward), 0]; [sin(zAngleForward), cos(zAngleForward), 0]; [0, 0, 1]];
-manual_pos_matrix = Rz * Ry * Rx;
+artifactRotation = [[0, 0, 1]; [-1, 0, 0]; [0, -1, 0]];
+manual_pos_matrix = artifactRotation * Rz * Ry * Rx;
 save(qinsFile, 'manual_pos_matrix', '-append');
 end
