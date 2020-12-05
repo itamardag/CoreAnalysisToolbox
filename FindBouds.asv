@@ -1,0 +1,25 @@
+function [width, blanksWidth, len, blanksLength, thickness] = FindBouds(blanks, qinsFile, path)
+    if nargin < 2
+        [qinsFile, path] = uigetfile('Qins-*.mat'); 
+    %     name = 'ScarsQins-18MII_6.mat'; path = 'E:\Archeology Lab\positioning francesco\';
+    end
+    scarsFile = 'scars' + qinsFile;
+    load([path qinsFile]);
+    load([ath scarsFile]);
+    
+    rotv = (manual_pos_matrix * v')';
+    bounds = struct;
+    bounds.fullWidth = [min(rotv(1, :)), max(rotv(1, :))];
+    bounds.fullThickness = [min(rotv(2, :)), max(rotv(2, :))];  
+    bounds.fullLength = [min(rotv(3, :)), max(rotv(3, :))];
+    
+    minBlanksLength = inf;
+    maxBlanksLength = -inf;
+    for blank = blanks
+        minBlanksLength = min(min(rotv(3, sdata(blank).vertices)), minBlanksLength);
+        maxBlanksLength = max(max(rotv(3, sdata(blank).vertices)), maxBlanksLength);
+    end
+    bounds.blanksLength = [minBlanksLength, maxBlanksLength
+    
+
+end
