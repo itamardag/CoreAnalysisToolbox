@@ -9,8 +9,8 @@ function [width, blanksWidth, len, blanksLength, thickness] = FindBounds(blanks,
     
     rotv = (manual_pos_matrix * v')';
     bounds = struct;
-    bounds.fullWidth = [min(rotv(:, 1)), max(rotv(:, 1))];
-    bounds.fullThickness = [min(rotv(:, 2)), max(rotv(:, 2))];  
+    bounds.fullThickness = [min(rotv(:, 1)), max(rotv(:, 1))];  
+    bounds.fullWidth = [min(rotv(:, 2)), max(rotv(:, 2))];
     bounds.fullLength = [min(rotv(:, 3)), max(rotv(:, 3))];
     
     width = abs(bounds.fullWidth(2) - bounds.fullWidth(1));
@@ -32,8 +32,8 @@ function [width, blanksWidth, len, blanksLength, thickness] = FindBounds(blanks,
     for blank = blanks
         for ridgeIndex = 1:length(sdata(blank).br_ridges)
             ridge = (manual_pos_matrix * sdata(blank).br_ridges{ridgeIndex}')';
-            minBlanksWidth = min(min(ridge(:, 1)), minBlanksWidth);
-            maxBlanksWidth = max(max(ridge(:, 1)), maxBlanksWidth);
+            minBlanksWidth = min(min(ridge(:, 2)), minBlanksWidth);
+            maxBlanksWidth = max(max(ridge(:, 2)), maxBlanksWidth);
         end
     end
     bounds.blanksWidth = [minBlanksWidth, maxBlanksWidth];
