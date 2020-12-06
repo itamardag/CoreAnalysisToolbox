@@ -1,4 +1,4 @@
-function [straightLineRidges, jaggedness, edgeLengthVar, angleVar, angleMean, angleTurn, pointDists] ...
+function [straightLineRidges, jaggedness, edgeLengthVar, angleVar, angleMean, angleTurn, pointDists,blanks] ...
     = StraightLineApprox(strikingPlatform, blanks, scars, path, name)
 if nargin < 3
     [name, path] = uigetfile('ScarsQins-*.mat'); 
@@ -58,11 +58,13 @@ for neighborIndex = 1:length(blanks)
     pointDists(neighborIndex, 2) = totalLineLength;
 %     plot3([p1(1), p2(1)], [p1(2), p2(2)], [p1(3), p2(3)]);
 end
-%remove empty cells from straighLineRidges, jaggedness and pointDists.
+%remove empty cells from straighLineRidges, jaggedness, pointDists and blanks.
 %Because it is agood practice. 
 straightLineRidges=straightLineRidges(~cellfun('isempty',straightLineRidges));
 jaggedness=jaggedness(jaggedness~=0);
 pointDists=pointDists(jaggedness~=0,:);
+blanks=blanks(jaggedness~=0,:);
+
 SetUpForwardDirections([path name(6:end)], up, meanForward);
 
 if length(straightLineRidges)>1 %more than 1 valid blank-plat pairs
