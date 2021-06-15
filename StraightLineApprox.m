@@ -31,6 +31,9 @@ for neighborIndex = 1:length(blanks)
     eitherNeighbor = neighbors == [min(strikingPlatform, neighbor), max(strikingPlatform, neighbor)];
     bothNeighbors = eitherNeighbor(:, 1) & eitherNeighbor(:, 2);
     ridgeIndices = find(bothNeighbors > 0);
+    if isempty(ridgeIndices)
+        continue; %scars don't share a ridge
+    end
 %     patch('Faces',scars.sdata(neighbor).faces,'Vertices',scars.v,'facecolor',[1 1 1],'linestyle','none','AmbientStrength',0.3, ...
 %       'SpecularExponent',30,'SpecularStrength',0.1,'Tag',getPatchTag);
     totalLineLength = 0;
@@ -61,9 +64,9 @@ end
 %remove empty cells from straighLineRidges, jaggedness, pointDists and blanks.
 %Because it is agood practice. 
 straightLineRidges=straightLineRidges(~cellfun('isempty',straightLineRidges));
-jaggedness=jaggedness(jaggedness~=0);
+blanks=blanks(jaggedness~=0);
 pointDists=pointDists(jaggedness~=0,:);
-blanks=blanks(jaggedness~=0,:);
+jaggedness=jaggedness(jaggedness~=0);
 
 SetUpForwardDirections([path name(6:end)], up, meanForward);
 

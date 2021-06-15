@@ -1,7 +1,11 @@
 function [ ang,var,angs,vars,plat,blanks,gr,path,name ] = scar_loop( plat, blanks,...
     segmentLength,segmentNumber,useSPStable,scars,file )
-%Perform the mesurement of the angle between the scar denoted by plat and
-%each of the scars denoted by blanks.
+%Performs the mesurement of the angle between the scar denoted by plat and
+%each of the scars denoted by blanks and save them in a _ScarAngles.mat
+%file.
+%The resulting file might be used by the core_analysis_folder or
+%core_analysis_folder_2 function.
+%
 %Returns also a graphic (gr) with the variability of the angle relative to the
 %distance from the edge in each scar
 if nargin < 6

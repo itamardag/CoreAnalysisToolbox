@@ -2,6 +2,9 @@ function [ var1 ] = add_lin_meas( var )
 %ADD_LIN_MEAS adds the linear measurment, based on the technological
 %orientation, of cores 
 %   
+if nargin<1
+    var=struct;
+end
 fold = [uigetdir([], 'select folder containing ScarAngles or scars_IDs files') '\'];%browse
 files=dir(fold);
 f_num=num2str(length(files));
@@ -21,7 +24,7 @@ for i=1:length(files)
         load(f_name,'name','path','plat','blanks');
         scars=load([path,name]);
         qins_name=erase(name,'Scars');
-        [~, ~, ~, ~] = StraightLineApprox(plat, blanks, scars, path, name);
+        [~, ~, ~, ~, ~, ~, ~, blanks] = StraightLineApprox(plat, blanks, scars, path, name);
         [c_width, surf_width, c_length, surf_length, c_thickness] = ... %, surf_thickness
             FindBounds(blanks, qins_name, path);
         len=length(var1.core_width)+1;

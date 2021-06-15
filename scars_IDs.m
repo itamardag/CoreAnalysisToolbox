@@ -1,6 +1,9 @@
 function [plat,blanks,path,name] = scars_IDs( plat,blanks )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+%UNTITLED Creates a _Scars_IDs.mat file with the technological interpretation of scar
+%segmentation (i.e., IDs of striking platform and blank scars)
+%
+%The resulting file might be used by the core_analysis_folder or
+%core_analysis_folder_2 function
 
 [name, path] = uigetfile('ScarsQins-*.mat');
 name_1=erase(name,'ScarsQins-');
