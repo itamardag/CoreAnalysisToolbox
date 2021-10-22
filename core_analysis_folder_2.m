@@ -54,8 +54,8 @@ for i=1:length(files)
         s_l=segLength*sum(~isnan(angles))';
         
         len=length(var.AC)+1;
-        var.CPA(len,:)={angles};
-        var.CPA_err(len,:)={variances};
+        var.CPA(len,:)={rad2deg(angles)};
+        var.CPA_err(len,:)={rad2deg(variances)};
         var.AC(len,:)={jagg};
         var.AC_avg_p_dist(len,:)={avg_p_dist(:,1)};
         var.path(len,:)={path};

@@ -26,11 +26,47 @@ if index == 0
             return
 end
 ridge = scars.scars_data{index, 1};
-[~, normals1, variances1] = ScarStripsNormals(scars.sdata(scar1).faces, scars.v, ridge, segmentLength);
-[~, normals2, variances2] = ScarStripsNormals(scars.sdata(scar2).faces, scars.v, ridge, segmentLength);
+[seg1, normals1, variances1] = ScarStripsNormals(scars.sdata(scar1).faces, scars.v, ridge, segmentLength);
+[seg2, normals2, variances2] = ScarStripsNormals(scars.sdata(scar2).faces, scars.v, ridge, segmentLength);
 
 mostStable1 = find(variances1 == min(variances1(1:min(segmentNumber, length(variances1)))), 1);
 mostStable2 = find(variances2 == min(variances2(1:min(segmentNumber, length(variances2)))), 1);
+CPA_fig=figure;
+patch('Faces',scars.f,'Vertices',scars.v,'facecolor',[1 1 1],'linestyle',...
+    'none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
+hold on
+for i=1:size(seg1,2)
+    patch('Faces',seg1{1,i},'Vertices',scars.v,'facecolor',[0 0 (1/size(seg1,2))*i],...
+        'linestyle','none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
+end
+for i=1:size(seg2,2)
+    patch('Faces',seg2{1,i},'Vertices',scars.v,'facecolor',[(1/size(seg2,2))*i 0 0],...
+        'linestyle','none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
+end
+for i=2:size(scars.scars_data,1)
+    plot3(scars.scars_data{i,1}(:,1),scars.scars_data{i,1}(:,2),...
+        scars.scars_data{i,1}(:,3),'Color','k')
+end
+plot3(scars.scars_data{i,1}(:,1),scars.scars_data{i,1}(:,2),scars.scars_data{i,1}(:,3),'Color','k')
+if useSPStable
+    strip_cent=mean(scars.v(unique(seg1{1,mostStable1}),:));
+    norm_v1=[strip_cent;strip_cent-(normals1(mostStable1,:).*10)];
+    plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[0 0 (1/size(seg1,2))*mostStable1])
+else
+    for i=1:size(seg1,2)
+        strip_cent=mean(scars.v(unique(seg1{1,i}),:));
+        norm_v1=[strip_cent;strip_cent-(normals1(i,:).*10)];
+        plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[0 0 (1/size(seg1,2))*i])
+    end
+end
+for i=1:size(seg2,2)
+    strip_cent=mean(scars.v(unique(seg2{1,i}),:));
+    norm_v1=[strip_cent;strip_cent-(normals2(i,:).*10)];
+    plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[(1/size(seg2,2))*i 0 0])
+end
+axis equal
+camlight('headlight');
+
 
 angle =  pi-acos(max(min(dot(normals1(mostStable1, :), normals2(mostStable2, :)), 1), -1));
 variance = variances1(mostStable1) + variances2(mostStable2);

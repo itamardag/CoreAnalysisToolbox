@@ -3,11 +3,11 @@ function [ ang,var,angs,vars,plat,blanks,err_c,err_id] = scar_loop_f( plat, blan
 %Perform the mesurement of the angle between the scar denoted by plat and
 %each of the scars denoted by blanks.
 
-% if nargin < 6
-%     [name, path] = uigetfile('ScarsQins-*.mat');
-%     fileName = [path '\' name];
-%     scars = load(fileName);
-% end
+if nargin < 6
+    [name, path] = uigetfile('ScarsQins-*.mat');
+    file = [path '\' name];
+    scars = load(file);
+end
 ang=NaN(0,1);
 var=NaN(0,1);
 c_angs=cell(1,0);
@@ -52,8 +52,8 @@ if nargin < 6
     name_1=erase(name_1,'.mat');
     [name_1,path_1]=uiputfile('*.mat','Select file to save',[path,name_1,'_ScarAngles.mat']);
     save([path_1,name_1],'ang','var','angs','vars','plat','blanks','path','name');
-    name_1=erase(name_1,'.mat');
-    savefig(gr,[path_1,name_1,'_figure.fig'])
+%     name_1=erase(name_1,'.mat');
+%      savefig(gr,[path_1,name_1,'_figure.fig'])
 
 
 end
