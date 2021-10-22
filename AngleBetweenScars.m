@@ -31,7 +31,7 @@ ridge = scars.scars_data{index, 1};
 
 mostStable1 = find(variances1 == min(variances1(1:min(segmentNumber, length(variances1)))), 1);
 mostStable2 = find(variances2 == min(variances2(1:min(segmentNumber, length(variances2)))), 1);
-CPA_fig=figure;
+figure;
 patch('Faces',scars.f,'Vertices',scars.v,'facecolor',[1 1 1],'linestyle',...
     'none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
 hold on
@@ -65,7 +65,12 @@ for i=1:size(seg2,2)
     plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[(1/size(seg2,2))*i 0 0])
 end
 axis equal
-camlight('headlight');
+av_1=sum(normals1,1)/norm(sum(normals1,1));
+av_2=sum(normals2,1)/norm(sum(normals2,1));
+cr_n=cross(av_1,av_2)/norm(cross(av_1,av_2));
+av_n=sum([normals2;normals1],1)/norm(sum([normals2;normals1],1))*-1;
+view(sum([cr_n;av_n],1))
+camlight('right');
 
 
 angle =  pi-acos(max(min(dot(normals1(mostStable1, :), normals2(mostStable2, :)), 1), -1));
