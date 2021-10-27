@@ -49,7 +49,7 @@ for i=1:length(files)
             StraightLineApprox(plat, blanks, scars, path, name);
         %Calculate linear measurements
         [c_width, surf_width, c_length, surf_length, c_thickness] = ... 
-            FindBounds(blanks, qins_name, path);
+            FindBounds(plat, blanks, qins_name, path);
         s_w=avg_p_dist(:,2);
         s_l=segLength*sum(~isnan(angles))';
         

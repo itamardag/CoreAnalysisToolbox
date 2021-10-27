@@ -1,5 +1,5 @@
-function [width, blanksWidth, len, blanksLength, thickness] = FindBounds(blanks, qinsFile, path)
-    if nargin < 3
+function [width, blanksWidth, len, blanksLength, thickness] = FindBounds(plat, blanks, qinsFile, path)
+    if nargin < 4
         [qinsFile, path] = uigetfile('Qins-*.mat'); 
 %         qinsFile = 'Qins-18MII_6.mat'; path = 'E:\Archeology Lab\positioning francesco\';
     end
@@ -38,6 +38,19 @@ function [width, blanksWidth, len, blanksLength, thickness] = FindBounds(blanks,
     end
     bounds.blanksWidth = [minBlanksWidth, maxBlanksWidth];
     blanksWidth = abs(bounds.blanksWidth(2) - bounds.blanksWidth(1));
-    
+    figure
+    patch('Faces',f,'Vertices',v,'facecolor',[1 1 1],'linestyle','none','AmbientStrength',0.3, ...
+        'SpecularExponent',30,'SpecularStrength',0.1);
+    for i=1:size(blanks,2)
+     patch('Faces',sdata(blanks(i)).faces,'Vertices',v,'facecolor','r','linestyle','none','AmbientStrength',0.3, ...
+            'SpecularExponent',30,'SpecularStrength',0.1);
+    end
+    patch('Faces',sdata(plat).faces,'Vertices',v,'facecolor','b','linestyle','none','AmbientStrength',0.3, ...
+            'SpecularExponent',30,'SpecularStrength',0.1);
+    axis equal
+    view([1 1 1]*-1)
+    camlight('right')
+    grid on
+    xlabel('Length (mm)');ylabel('Width (mm)');zlabel('Thickness (mm)')
     save([path qinsFile], 'bounds', '-append');
 end

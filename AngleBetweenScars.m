@@ -54,23 +54,30 @@ if useSPStable
     plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[0 0 (1/size(seg1,2))*mostStable1])
 else
     for i=1:size(seg1,2)
+        if isnan(seg1{1,i})
+        else
         strip_cent=mean(scars.v(unique(seg1{1,i}),:));
         norm_v1=[strip_cent;strip_cent-(normals1(i,:).*10)];
         plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[0 0 (1/size(seg1,2))*i])
+        end
     end
 end
 for i=1:size(seg2,2)
+    if isnan (seg2{1,i})
+    else
     strip_cent=mean(scars.v(unique(seg2{1,i}),:));
     norm_v1=[strip_cent;strip_cent-(normals2(i,:).*10)];
     plot3(norm_v1(:,1),norm_v1(:,2),norm_v1(:,3),'color',[(1/size(seg2,2))*i 0 0])
+    end
 end
-axis equal
-av_1=sum(normals1,1)/norm(sum(normals1,1));
-av_2=sum(normals2,1)/norm(sum(normals2,1));
+axis equal; grid on
+xlabel('x (mm)');ylabel('y (mm)');zlabel('z (mm)')
+av_1=sum(normals1,1,'omitnan')/norm(sum(normals1,1,'omitnan'));
+av_2=sum(normals2,1,'omitnan')/norm(sum(normals2,1,'omitnan'));
 cr_n=cross(av_1,av_2)/norm(cross(av_1,av_2));
-av_n=sum([normals2;normals1],1)/norm(sum([normals2;normals1],1))*-1;
+av_n=sum([normals2;normals1],1,'omitnan')/norm(sum([normals2;normals1],1,'omitnan'))*-1;
 view(sum([cr_n;av_n],1))
-camlight('right');
+camlight('left');
 
 
 angle =  pi-acos(max(min(dot(normals1(mostStable1, :), normals2(mostStable2, :)), 1), -1));
