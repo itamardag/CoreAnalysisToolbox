@@ -32,22 +32,32 @@ ridge = scars.scars_data{index, 1};
 mostStable1 = find(variances1 == min(variances1(1:min(segmentNumber, length(variances1)))), 1);
 mostStable2 = find(variances2 == min(variances2(1:min(segmentNumber, length(variances2)))), 1);
 figure;
+% patch object surface
 patch('Faces',scars.f,'Vertices',scars.v,'facecolor',[1 1 1],'linestyle',...
     'none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
 hold on
-for i=1:size(seg1,2)
+%patch blue stripes
+if useSPStable
+    lim=segmentNumber;
+else
+    lim=size(seg1,2);
+end
+for i=1:lim
     patch('Faces',seg1{1,i},'Vertices',scars.v,'facecolor',[0 0 (1/size(seg1,2))*i],...
         'linestyle','none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
 end
+%patch red stripes
 for i=1:size(seg2,2)
     patch('Faces',seg2{1,i},'Vertices',scars.v,'facecolor',[(1/size(seg2,2))*i 0 0],...
         'linestyle','none','AmbientStrength',0.3,'SpecularExponent',30,'SpecularStrength',0.1);
 end
+%plot scars (not merged) possibly fix this detail
 for i=2:size(scars.scars_data,1)
     plot3(scars.scars_data{i,1}(:,1),scars.scars_data{i,1}(:,2),...
         scars.scars_data{i,1}(:,3),'Color','k')
 end
 plot3(scars.scars_data{i,1}(:,1),scars.scars_data{i,1}(:,2),scars.scars_data{i,1}(:,3),'Color','k')
+%plot blue average normals
 if useSPStable
     strip_cent=mean(scars.v(unique(seg1{1,mostStable1}),:));
     norm_v1=[strip_cent;strip_cent-(normals1(mostStable1,:).*10)];
@@ -62,6 +72,7 @@ else
         end
     end
 end
+%plot red average normals
 for i=1:size(seg2,2)
     if isnan (seg2{1,i})
     else
@@ -71,7 +82,7 @@ for i=1:size(seg2,2)
     end
 end
 axis equal; grid on
-xlabel('x (mm)');ylabel('y (mm)');zlabel('z (mm)')
+xlabel('Length (mm)');ylabel('Width (mm)');zlabel('Thickness (mm)')
 av_1=sum(normals1,1,'omitnan')/norm(sum(normals1,1,'omitnan'));
 av_2=sum(normals2,1,'omitnan')/norm(sum(normals2,1,'omitnan'));
 cr_n=cross(av_1,av_2)/norm(cross(av_1,av_2));

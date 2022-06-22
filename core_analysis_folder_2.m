@@ -1,8 +1,8 @@
 function [ var ] = core_analysis_folder_2( segLength, segNum )
-%CORE_ANALYSIS_FOLDER calculates the angle between scars (CPA) and 
-%the average curvature of the edge of the striking platform of each blank, 
-%and the reduction surface and core linear meaurements (Length, Width, Thickness)
-%based on the measures segLength and segNum and the information saved in the 
+%CORE_ANALYSIS_FOLDER calculates the angle between scars and the reduction surface(CPA) and 
+%the average curvature of the edge of the striking platform of each blank,
+% and core linear meaurements (Length, Width, Thickness)
+% based on the measures segLength and segNum and the information saved in the 
 %_ScarsAngles.mat or _Scars_IDs.mat files in a folder
 %
 %Files might be created with the scar_loop or scars_IDs function
