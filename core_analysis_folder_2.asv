@@ -56,13 +56,15 @@ for i=1:length(files)
         scars=load([path,name]);
         qins_name=erase(name,'Scars');
 
+        len=len+1;
+
         %Calculate CPA
         if runCPA
             [~,~,angles,variances,plat,blanks]=... 
                 scar_loop_f(plat,blanks,segLength,segNum,true,scars,name);
             
-            var.CPA(i,:)={rad2deg(angles)};
-            var.CPA_err(i,:)={rad2deg(variances)};
+            var.CPA(len,:)={rad2deg(angles)};
+            var.CPA_err(len,:)={rad2deg(variances)};
         end
 
         %Calculate AC
@@ -70,32 +72,32 @@ for i=1:length(files)
             [~, jagg, ~, ~,~,~,avg_p_dist,~] = ... 
                 StraightLineApprox(plat, blanks, scars, path, name);
 
-            var.AC(i,:)={jagg};
-            var.AC_avg_p_dist(i,:)={avg_p_dist(:,1)};
+            var.AC(len,:)={jagg};
+            var.AC_avg_p_dist(len,:)={avg_p_dist(:,1)};
         end
 
         %Calculate linear measurements
         if runLIN
             [c_width, surf_width, c_length, surf_length, c_thickness] = ... 
                 FindBounds(plat, blanks, qins_name, path);
-            var.core_width(i,:)={c_width};
-            var.core_length(i,:)={c_length};
-            var.core_thickness(i,:)={c_thickness};
-            var.surf_width(i,:)={surf_width};
-            var.surf_length(i,:)={surf_length};
+            var.core_width(len,:)={c_width};
+            var.core_length(len,:)={c_length};
+            var.core_thickness(len,:)={c_thickness};
+            var.surf_width(len,:)={surf_width};
+            var.surf_length(len,:)={surf_length};
         end
 
         if runCPA && runAC
             s_w=avg_p_dist(:,2);
             s_l=segLength*sum(~isnan(angles))';
-            var.scar_width(i,:)={s_w};
-            var.scar_length(i,:)={s_l};
+            var.scar_width(len,:)={s_w};
+            var.scar_length(len,:)={s_l};
         end
         
-        var.path(i,:)={path};
-        var.name(i,:)={name};
-        var.plat(i,:)={plat};
-        var.blanks(i,:)={blanks};
+        var.path(len,:)={path};
+        var.name(len,:)={name};
+        var.plat(len,:)={plat};
+        var.blanks(len,:)={blanks};
         
         waitbar(i/length(files),wb,[num2str(i),' of ',f_num,' files processed'])
     else
